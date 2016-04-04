@@ -4,8 +4,7 @@
 \alias{cells}
 \title{Create cell contents}
 \usage{
-cells(ref, style, value, formula, is_formula, is_value, is_blank, is_bool,
-  is_number, is_text, is_date)
+cells(ref, style, value, formula, type)
 }
 \arguments{
 \item{ref}{A cell reference in A1 format}
@@ -16,19 +15,8 @@ cells(ref, style, value, formula, is_formula, is_value, is_blank, is_bool,
 
 \item{formula}{A \emph{list} of formulae (NULL values when blank)}
 
-\item{is_formula}{Logical vector indicating if the cell is a formula}
-
-\item{is_value}{Logical vector indicating if the cell is a value}
-
-\item{is_blank}{Logical vector indicating if the cell is blank}
-
-\item{is_bool}{Logical vector indicating if the cell is a boolean (logical)}
-
-\item{is_number}{Logical vector indicating if the cell is a number (there is no distinction between integer and double)}
-
-\item{is_text}{Logical vector indicating if the cell is text}
-
-\item{is_date}{Logical vector indicating if the cell is a date}
+\item{type}{String describing the type of the cell.  Must be one
+of "blank", "bool", "date", "number" or "text".}
 }
 \description{
 Create a \code{tbl_df} of cell contents

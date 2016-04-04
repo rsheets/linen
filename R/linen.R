@@ -28,28 +28,14 @@ worksheet <- function(cells, merged, workbook) {
 ##' @param style An integer indicating which style to apply
 ##' @param value A \emph{list} of values (NULL values when blank)
 ##' @param formula A \emph{list} of formulae (NULL values when blank)
-##' @param is_formula Logical vector indicating if the cell is a formula
-##' @param is_value Logical vector indicating if the cell is a value
-##' @param is_blank Logical vector indicating if the cell is blank
-##' @param is_bool Logical vector indicating if the cell is a boolean (logical)
-##' @param is_number Logical vector indicating if the cell is a number (there is no distinction between integer and double)
-##' @param is_text Logical vector indicating if the cell is text
-##' @param is_date Logical vector indicating if the cell is a date
+##' @param type String describing the type of the cell.  Must be one
+##'   of "blank", "bool", "date", "number" or "text".
 ##' @export
-cells <- function(ref, style, value, formula,
-                  is_formula, is_value, is_blank,
-                  is_bool, is_number, is_text, is_date) {
+cells <- function(ref, style, value, formula, type) {
   n <- length(ref)
   assert_length(style, n)
   assert_length(formula, n)
   assert_length(value, n)
-  assert_length(is_formula, n)
-  assert_length(is_value, n)
-  assert_length(is_blank, n)
-  assert_length(is_bool, n)
-  assert_length(is_number, n)
-  assert_length(is_text, n)
-  assert_length(is_date, n)
 
   assert_character(ref) # check with a regexp?
   assert_integer(style)
@@ -57,15 +43,20 @@ cells <- function(ref, style, value, formula,
   assert_list(value)
   assert_list(formula)
 
-  assert_logical(is_formula)
-  assert_logical(is_value)
-  assert_logical(is_blank)
-  assert_logical(is_bool)
-  assert_logical(is_number)
-  assert_logical(is_text)
-  assert_logical(is_date)
+  assert_character(type) # check valid values?
 
-  tibble::data_frame(ref, style, value, formula,
+  ## TODO: There are some blanks in here I need to get; formulae that
+  ## yield zerolength strings, text cells that have no length.
+  is_formula <- lengths(formula) > 0L
+  is_value <- lengths(value) > 0L& !is_formula
+
+  is_blank <- type == "blank"
+  is_bool <- type == "bool"
+  is_number <- is_bool | type == "number"
+  is_date <- type == "date"
+  is_text <- type == "text"
+
+  tibble::data_frame(ref, style, value, formula, type,
                      is_formula, is_value, is_blank,
                      is_bool, is_number, is_text, is_date)
 }
