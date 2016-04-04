@@ -1,0 +1,16 @@
+Package: linen
+Title: Spreadsheet Data Structures
+Version: 0.0.1
+Author: Rich FitzJohn
+Maintainer: Rich FitzJohn <rich.fitzjohn@gmail.com>
+Description: Spreadsheet data structures, common across different spreadsheet
+    providers.
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/jennybc/linen
+BugReports: https://github.com/jennybc/linen/issues
+Imports:
+    R6
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
