@@ -1,9 +1,73 @@
-workbook <- function(style, sheets=NULL) {
-  .R6_workbook$new(style, sheets)
+##' Create a workbook object
+##'
+##' @title Create a workbook object
+##' @param style A data.frame of style information.  This is not yet
+##'   validated and we'll change what goes on here at some point.
+##' @export
+workbook <- function(style) {
+  .R6_workbook$new(style)
 }
 
-worksheet <- function(cells, merged, workbook=NULL) {
+##' Create a worksheet object
+##'
+##' @title Create a worksheet object
+##' @param cells A \code{tbl_df}, created by \code{\link{cells}}.
+##' @param merged A list of \code{cell_limits} objects indicating
+##'   merged cellls.  Can be an empty list if there are no merged
+##'   cells.
+##' @param workbook A workbook object.
+##' @export
+worksheet <- function(cells, merged, workbook) {
   .R6_worksheet$new(cells, merged, workbook)
+}
+
+##' Create a \code{tbl_df} of cell contents
+##'
+##' @title Create cell contents
+##' @param ref A cell reference in A1 format
+##' @param style An integer indicating which style to apply
+##' @param value A \emph{list} of values (NULL values when blank)
+##' @param formula A \emph{list} of formulae (NULL values when blank)
+##' @param is_formula Logical vector indicating if the cell is a formula
+##' @param is_value Logical vector indicating if the cell is a value
+##' @param is_blank Logical vector indicating if the cell is blank
+##' @param is_bool Logical vector indicating if the cell is a boolean (logical)
+##' @param is_number Logical vector indicating if the cell is a number (there is no distinction between integer and double)
+##' @param is_text Logical vector indicating if the cell is text
+##' @param is_date Logical vector indicating if the cell is a date
+##' @export
+cells <- function(ref, style, value, formula,
+                  is_formula, is_value, is_blank,
+                  is_bool, is_number, is_text, is_date) {
+  n <- length(ref)
+  assert_length(style, n)
+  assert_length(formula, n)
+  assert_length(value, n)
+  assert_length(is_formula, n)
+  assert_length(is_value, n)
+  assert_length(is_blank, n)
+  assert_length(is_bool, n)
+  assert_length(is_number, n)
+  assert_length(is_text, n)
+  assert_length(is_date, n)
+
+  assert_character(ref) # check with a regexp?
+  assert_integer(style)
+
+  assert_list(value)
+  assert_list(formula)
+
+  assert_logical(is_formula)
+  assert_logical(is_value)
+  assert_logical(is_blank)
+  assert_logical(is_bool)
+  assert_logical(is_number)
+  assert_logical(is_text)
+  assert_logical(is_date)
+
+  tibble::data_frame(ref, style, value, formula,
+                     is_formula, is_value, is_blank,
+                     is_bool, is_number, is_text, is_date)
 }
 
 ##' @importFrom R6 R6Class
@@ -16,10 +80,16 @@ worksheet <- function(cells, merged, workbook=NULL) {
     ## TODO: this needs some sort of nice "reference" concept (path,
     ## id, etc), perhaps also a hook for updating or checking if we're
     ## out of date, etc.
-    initialize=function(style, sheets) {
+    ## TODO: Validate style
+    initialize=function(style) {
       self$style <- style
-      self$sheets <- sheets
+    },
+
+    ## TODO: name this vector too, once worksheet names are done.
+    add_sheet=function(sheet) {
+      self$sheets <- c(self$sheets, sheet)
     }
+
   ))
 
 .R6_worksheet <- R6::R6Class(
@@ -37,13 +107,14 @@ worksheet <- function(cells, merged, workbook=NULL) {
 
     ## TODO: Need to get the name of the worksheet in here.
     initialize=function(cells, merged, workbook) {
+      ## TODO: validate cells, merged, and workbook
       self$cells <- cells
       self$merged <- merged
       self$workbook <- workbook
       ## Spun out because it's super ugly:
       worksheet_init(self)
 
-      self$workbook$sheets <- c(self$workbook$sheets, self)
+      self$workbook$add_sheet(self)
     }
   ))
 
@@ -169,38 +240,4 @@ match_cells <- function(x, table, ...) {
   x <- paste(x[, 1L], x[, 2L], sep="\r")
   table <- paste(table[, 1L], table[, 2L], sep="\r")
   match(x, table, ...)
-}
-
-cells <- function(ref, style, value, formula,
-                  is_formula, is_value, is_blank,
-                  is_bool, is_number, is_text, is_date) {
-  n <- length(ref)
-  assert_length(style, n)
-  assert_length(formula, n)
-  assert_length(value, n)
-  assert_length(is_formula, n)
-  assert_length(is_value, n)
-  assert_length(is_blank, n)
-  assert_length(is_bool, n)
-  assert_length(is_number, n)
-  assert_length(is_text, n)
-  assert_length(is_date, n)
-
-  assert_character(ref) # check with a regexp?
-  assert_integer(style)
-
-  assert_list(value)
-  assert_list(formula)
-
-  assert_logical(is_formula)
-  assert_logical(is_value)
-  assert_logical(is_blank)
-  assert_logical(is_bool)
-  assert_logical(is_number)
-  assert_logical(is_text)
-  assert_logical(is_date)
-
-  tibble::data_frame(ref, style, value, formula,
-                     is_formula, is_value, is_blank,
-                     is_bool, is_number, is_text, is_date)
 }
