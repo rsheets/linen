@@ -1,11 +1,3 @@
-##' Subset a rexcelr sheet based on a rectangular selection based
-##' on a cellranger \code{cell_limits} object.
-##'
-##' @title Subset a excel sheet
-##' @param dat A excel sheet
-##' @param xr A \code{cell_limits} object indicating the extent to
-##'   extract.
-##' @export
 jailbreak_subset <- function(dat, xr) {
   if (!inherits(xr, "cell_limits")) {
     stop("xr must be a cell_limits object")

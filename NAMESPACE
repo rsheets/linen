@@ -2,7 +2,6 @@
 
 S3method(print,worksheet)
 export(cells)
-export(jailbreak_subset)
 export(workbook)
 export(worksheet)
 export(worksheet_to_table)
