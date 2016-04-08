@@ -120,9 +120,8 @@ worksheet_init <- function(self) {
     merged_drop <- do.call("rbind", merged_pos)
     i <- match_cells(merged_drop, cells_pos)
     i <- -i[!is.na(i)]
-    for (j in seq_along(cells)) {
-      cells[[j]] <- cells[[j]][i]
-    }
+
+    self$cells <- self$cells[i, ]
     cells_pos <- cells_pos[i, , drop=FALSE]
     tmp <- rbind(cells_pos, t(vapply(merged, function(el) el$lr, integer(2))))
     dim <- apply(tmp, 2, max)
