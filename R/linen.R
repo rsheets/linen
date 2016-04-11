@@ -154,53 +154,8 @@ worksheet_init <- function(self) {
 ##' @export
 print.worksheet <- function(x, ...) {
   ## First, let's give an overview?
-  dim <- x$dim
-  cat(sprintf("<xlsx data: %d x %d>\n", dim[[1]], dim[[2]]))
-
-  ## Helper for the merged cells.
-  print_merge <- function(el) {
-    anc <- "\U2693"
-    left <- "\U2190"
-    up <- "\U2191"
-    ul <- "\U2196"
-
-    d <- dim(el)
-    anchor <- el$ul
-    loc <- loc_merge(el)
-    if (d[[1]] == 1L) {
-      str <- rep(left, d[[2L]])
-    } else if (d[[2L]] == 1L) {
-      str <- rep(up, d[[1L]])
-    } else {
-      str <- matrix(ul, d[[1]], d[[2]])
-      str[1L, ] <- left
-      str[, 1L] <- up
-    }
-    str[[1L]] <- anc
-    list(loc=loc, str=str)
-  }
-
-  m <- matrix(NA, dim[[1]], dim[[2]])
-  for (el in x$merged) {
-    tmp <- print_merge(el)
-    m[tmp$loc] <- tmp$str
-  }
-
-  pos <- x$pos
-  m[pos[x$cells$is_formula & x$cells$is_number, , drop=FALSE]] <- "="
-  m[pos[x$cells$is_formula & x$cells$is_text,   , drop=FALSE]] <- "$"
-  m[pos[x$cells$is_formula & x$cells$is_bool,   , drop=FALSE]] <- "!"
-  m[pos[x$cells$is_formula & x$cells$is_date,   , drop=FALSE]] <- "#"
-  m[pos[x$cells$is_value   & x$cells$is_number, , drop=FALSE]] <- "0"
-  m[pos[x$cells$is_value   & x$cells$is_text,   , drop=FALSE]] <- "a"
-  m[pos[x$cells$is_value   & x$cells$is_bool,   , drop=FALSE]] <- "b"
-  m[pos[x$cells$is_formula & x$cells$is_date,   , drop=FALSE]] <- "d"
-  m[is.na(m)] <- " "
-
-  mm <- rbind(rep(LETTERS, length.out=dim[[2]]), m)
-  cat(paste(sprintf("%s: %s\n",
-                    format(c("", seq_len(dim[[1]]))),
-                    apply(mm, 1, paste, collapse="")), collapse=""))
+  cat(sprintf("<worksheet: %d x %d>\n", x$dim[[1L]], x$dim[[2L]]))
+  print_sheet(x)
   invisible(x)
 }
 

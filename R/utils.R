@@ -65,3 +65,15 @@ assert_length <- function(x, n, name=deparse(substitute(x))) {
     stop(sprintf("%s must have %d elements", name, n), call. = FALSE)
   }
 }
+
+assert_inherits <- function(x, what, name=deparse(substitute(x))) {
+  if (!inherits(x, what)) {
+    stop(sprintf("%s must be a %s", name,
+                 paste(what, collapse=" / ")), call.=FALSE)
+  }
+}
+
+xr_to_idx <- function(xr) {
+  list(r=xr$ul[[1L]]:xr$lr[[1L]],
+       c=xr$ul[[2L]]:xr$lr[[2L]])
+}
