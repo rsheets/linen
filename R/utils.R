@@ -77,3 +77,9 @@ xr_to_idx <- function(xr) {
   list(r=xr$ul[[1L]]:xr$lr[[1L]],
        c=xr$ul[[2L]]:xr$lr[[2L]])
 }
+
+crayon_col <- function(fg, bg) {
+  crayon::combine_styles(
+    crayon::make_style(fg),
+    crayon::make_style(bg, bg=TRUE))
+}

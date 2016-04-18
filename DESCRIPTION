@@ -10,7 +10,8 @@ LazyData: true
 URL: https://github.com/jennybc/linen
 BugReports: https://github.com/jennybc/linen/issues
 Imports:
-    R6
+    R6,
+    crayon
 Suggests:
     testthat
 RoxygenNote: 5.0.1

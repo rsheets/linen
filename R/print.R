@@ -1,4 +1,4 @@
-print_sheet <- function(x, xr=NULL, ...) {
+print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
   ## Helper for the merged cells.
   print_merge <- function(el) {
     anc <- "\U2693"
@@ -30,6 +30,7 @@ print_sheet <- function(x, xr=NULL, ...) {
   ## but I'm not sure that's worth the effort...
 
   m <- matrix(NA, dim[[1]], dim[[2]])
+
   for (el in x$merged) {
     tmp <- print_merge(el)
     m[tmp$loc] <- tmp$str
@@ -44,6 +45,35 @@ print_sheet <- function(x, xr=NULL, ...) {
   m[pos[x$cells$is_value   & x$cells$is_bool,   , drop=FALSE]] <- "b"
   m[pos[x$cells$is_formula & x$cells$is_date,   , drop=FALSE]] <- "d"
   m[is.na(m)] <- " "
+
+  ## TODO: This probably generalises out at some point as this is
+  ## pretty general; apply ansi colour to a table based on vectors of
+  ## colour.
+  if (!is.null(bg) || !is.null(fg) && crayon::num_colors() > 1L) {
+    col <- cbind(if (is.null(bg)) NA else bg, if (is.null(fg)) NA else fg)
+    col[is.na(col[, 1L]), 1L] <- "#FFFFFF"
+    col[is.na(col[, 2L]), 2L] <- "#000000"
+    col_tmp <- paste(col[, 1L], col[, 2L], sep="/")
+    col_idx <- match(col_tmp, unique(col_tmp))
+    col_uniq <- unique(col)
+    col_funs <- apply(col_uniq, 1, function(x) crayon_col(x[[2]], x[[1]]))
+
+    use <- matrix(NA, dim[[1]], dim[[2]])
+    use[pos] <- col_idx
+    for (el in x$merged) {
+      tmp <- loc_merge(el)
+      use[tmp[-1, , drop=FALSE]] <- use[tmp[1, , drop=FALSE]]
+    }
+
+    m <- m
+    for (i in seq_along(col_funs)) {
+      j <- which(use == i)
+      m[j] <- col_funs[[i]](m[j])
+    }
+
+    j <- is.na(use)
+    m[j] <- crayon_col("#000000", "#FFFFFF")(m[j])
+  }
 
   clab <- rep(LETTERS, length.out=dim[[2]])
   rlab <- seq_len(dim[[1]])
