@@ -174,8 +174,8 @@ loc_merge <- function(el, drop_anchor=FALSE) {
     rows <- seq.int(anchor[[1]], by=1L, length.out=d[[1L]])
     cols <- anchor[[2]]
   } else {
-    cols <- seq.int(anchor[[2]], by=1L, length.out=d[[2L]])
-    rows <- seq.int(anchor[[1]], by=1L, length.out=d[[1L]])
+    cols <- rep(seq.int(anchor[[2]], by=1L, length.out=d[[2L]]), each=d[[1L]])
+    rows <- rep(seq.int(anchor[[1]], by=1L, length.out=d[[1L]]), d[[2L]])
   }
   ret <- cbind(row=rows, col=cols)
   if (drop_anchor) {
