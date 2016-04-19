@@ -129,9 +129,9 @@ worksheet_init <- function(self) {
     self$cells <- self$cells[i, ]
     cells_pos <- cells_pos[i, , drop=FALSE]
     tmp <- rbind(cells_pos, t(vapply(merged, function(el) el$lr, integer(2))))
-    dim <- apply(tmp, 2, max)
+    dim <- apply(rbind(0, tmp), 2, max)
   } else {
-    dim <- apply(cells_pos, 2, max)
+    dim <- apply(rbind(0, cells_pos), 2, max)
   }
 
   ## Now, build a look up table for all the cells.
