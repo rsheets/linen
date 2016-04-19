@@ -4,9 +4,11 @@
 \alias{worksheet}
 \title{Create a worksheet object}
 \usage{
-worksheet(cells, merged, workbook)
+worksheet(name, cells, merged, workbook)
 }
 \arguments{
+\item{name}{The name of the worksheet}
+
 \item{cells}{A \code{tbl_df}, created by \code{\link{cells}}.}
 
 \item{merged}{A list of \code{cell_limits} objects indicating

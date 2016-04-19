@@ -1,24 +1,26 @@
 ##' Create a workbook object
 ##'
 ##' @title Create a workbook object
+##' @param names Names of sheets within the workbook
 ##' @param style A data.frame of style information.  This is not yet
 ##'   validated and we'll change what goes on here at some point.
 ##' @export
-workbook <- function(style) {
-  .R6_workbook$new(style)
+workbook <- function(names, style) {
+  .R6_workbook$new(names, style)
 }
 
 ##' Create a worksheet object
 ##'
 ##' @title Create a worksheet object
+##' @param name The name of the worksheet
 ##' @param cells A \code{tbl_df}, created by \code{\link{cells}}.
 ##' @param merged A list of \code{cell_limits} objects indicating
 ##'   merged cellls.  Can be an empty list if there are no merged
 ##'   cells.
 ##' @param workbook A workbook object.
 ##' @export
-worksheet <- function(cells, merged, workbook) {
-  .R6_worksheet$new(cells, merged, workbook)
+worksheet <- function(name, cells, merged, workbook) {
+  .R6_worksheet$new(name, cells, merged, workbook)
 }
 
 ##' Create a \code{tbl_df} of cell contents
@@ -64,6 +66,7 @@ cells <- function(ref, style, type, value, formula) {
 .R6_workbook <- R6::R6Class(
   "workbook",
   public=list(
+    names=NULL,
     sheets=NULL,
     style=NULL,
 
@@ -71,13 +74,15 @@ cells <- function(ref, style, type, value, formula) {
     ## id, etc), perhaps also a hook for updating or checking if we're
     ## out of date, etc.
     ## TODO: Validate style
-    initialize=function(style) {
+    initialize=function(names, style) {
+      self$names <- names
       self$style <- style
+      self$sheets <- setNames(vector("list", length(names)), names)
     },
 
     ## TODO: name this vector too, once worksheet names are done.
     add_sheet=function(sheet) {
-      self$sheets <- c(self$sheets, sheet)
+      self$sheets[[sheet$name]] <- sheet
     }
 
   ))
@@ -86,6 +91,7 @@ cells <- function(ref, style, type, value, formula) {
   "worksheet",
 
   public=list(
+    name=NULL,
     cells=NULL,
     dim=NULL,
     pos=NULL,
@@ -96,14 +102,14 @@ cells <- function(ref, style, type, value, formula) {
     workbook=NULL,
 
     ## TODO: Need to get the name of the worksheet in here.
-    initialize=function(cells, merged, workbook) {
-      ## TODO: validate cells, merged, and workbook
+    initialize=function(name, cells, merged, workbook) {
+      ## TODO: validate all the things
+      self$name <- name
       self$cells <- cells
       self$merged <- merged
       self$workbook <- workbook
       ## Spun out because it's super ugly:
       worksheet_init(self)
-
       self$workbook$add_sheet(self)
     }
   ))

@@ -4,9 +4,11 @@
 \alias{workbook}
 \title{Create a workbook object}
 \usage{
-workbook(style)
+workbook(names, style)
 }
 \arguments{
+\item{names}{Names of sheets within the workbook}
+
 \item{style}{A data.frame of style information.  This is not yet
 validated and we'll change what goes on here at some point.}
 }
