@@ -26,24 +26,23 @@ worksheet <- function(cells, merged, workbook) {
 ##' @title Create cell contents
 ##' @param ref A cell reference in A1 format
 ##' @param style An integer indicating which style to apply
-##' @param value A \emph{list} of values (NULL values when blank)
-##' @param formula A \emph{list} of formulae (NULL values when blank)
 ##' @param type String describing the type of the cell.  Must be one
 ##'   of "blank", "bool", "date", "number" or "text".
+##' @param value A \emph{list} of values (NULL values when blank)
+##' @param formula A character vector of formulae (NA values when blank)
 ##' @export
-cells <- function(ref, style, value, formula, type) {
+cells <- function(ref, style, type, value, formula) {
   n <- length(ref)
+  assert_character(ref) # check with a regexp?
   assert_length(style, n)
+  assert_character(type) # check valid values?
   assert_length(formula, n)
   assert_length(value, n)
 
-  assert_character(ref) # check with a regexp?
   assert_integer(style)
 
   assert_list(value)
-  assert_list(formula)
-
-  assert_character(type) # check valid values?
+  assert_character(formula)
 
   ## TODO: There are some blanks in here I need to get; formulae that
   ## yield zerolength strings, text cells that have no length.

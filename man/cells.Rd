@@ -4,19 +4,19 @@
 \alias{cells}
 \title{Create cell contents}
 \usage{
-cells(ref, style, value, formula, type)
+cells(ref, style, type, value, formula)
 }
 \arguments{
 \item{ref}{A cell reference in A1 format}
 
 \item{style}{An integer indicating which style to apply}
 
-\item{value}{A \emph{list} of values (NULL values when blank)}
-
-\item{formula}{A \emph{list} of formulae (NULL values when blank)}
-
 \item{type}{String describing the type of the cell.  Must be one
 of "blank", "bool", "date", "number" or "text".}
+
+\item{value}{A \emph{list} of values (NULL values when blank)}
+
+\item{formula}{A character vector of formulae (NA values when blank)}
 }
 \description{
 Create a \code{tbl_df} of cell contents
