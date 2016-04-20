@@ -21,7 +21,8 @@ workbook <- function(names, style, defined_names) {
 ##'   cells.
 ##' @param workbook A workbook object.
 ##' @export
-worksheet <- function(name, cols, rows, cells, merged, comments, workbook) {
+worksheet <- function(name, cols, rows, cells, merged, view, comments,
+                      workbook) {
   ## There's more to come here, at least:
   ##
   ##   - ranges
@@ -34,7 +35,7 @@ worksheet <- function(name, cols, rows, cells, merged, comments, workbook) {
   ## Especially because some of those naturally belong at the
   ## worksheet level, rather than the worksheet level.  Support is
   ## being added as I get it working in rexcel.
-  .R6_worksheet$new(name, cols, rows, cells, merged, comments, workbook)
+  .R6_worksheet$new(name, cols, rows, cells, merged, view, comments, workbook)
 }
 
 ##' Create a \code{tbl_df} of cell contents
@@ -115,6 +116,7 @@ cells <- function(ref, style, type, value, formula) {
     cells=NULL,
     merged=NULL,
     comments=NULL,
+    view=NULL,
 
     dim=NULL,
     pos=NULL,
@@ -122,13 +124,15 @@ cells <- function(ref, style, type, value, formula) {
     lookup2=NULL,
 
     ## TODO: Need to get the name of the worksheet in here.
-    initialize=function(name, rows, cols, cells, merged, comments, workbook) {
+    initialize=function(name, rows, cols, cells, merged, view, comments,
+                        workbook) {
       ## TODO: validate all the things
       self$name <- name
       self$cols <- cols
       self$rows <- rows
       self$cells <- cells
       self$merged <- merged
+      self$view <- view
       self$comments <- comments
       self$workbook <- workbook
       ## Spun out because it's super ugly:
