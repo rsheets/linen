@@ -48,7 +48,7 @@ cells <- function(ref, style, type, value, formula) {
 
   ## TODO: There are some blanks in here I need to get; formulae that
   ## yield zerolength strings, text cells that have no length.
-  is_formula <- lengths(formula) > 0L
+  is_formula <- !is.na(formula)
   is_value <- lengths(value) > 0L& !is_formula
 
   is_blank <- type == "blank"

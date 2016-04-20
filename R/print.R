@@ -44,6 +44,8 @@ print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
   m[pos[x$cells$is_value   & x$cells$is_text,   , drop=FALSE]] <- "a"
   m[pos[x$cells$is_value   & x$cells$is_bool,   , drop=FALSE]] <- "b"
   m[pos[x$cells$is_formula & x$cells$is_date,   , drop=FALSE]] <- "d"
+  empty_row <- apply(is.na(m), 1, all)
+  empty_col <- apply(is.na(m), 2, all)
   m[is.na(m)] <- " "
 
   ## TODO: This probably generalises out at some point as this is
@@ -78,12 +80,17 @@ print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
   clab <- rep(LETTERS, length.out=dim[[2]])
   rlab <- seq_len(dim[[1]])
 
-  if (!is.null(xr)) {
-    idx <- xr_to_idx(xr)
-    m <- m[idx$r, idx$c]
-    clab <- clab[idx$c]
-    rlab <- rlab[idx$r]
+  ## Here, I do want to check for a bunch of totally blank cells
+  ## around the edges and clip them off.
+  if (is.null(xr)) {
+    xr <- cellranger::cell_limits(c(1, 1),
+                                  c(max(which(!empty_row)),
+                                    max(which(!empty_col))))
   }
+  idx <- xr_to_idx(xr)
+  m <- m[idx$r, idx$c]
+  clab <- clab[idx$c]
+  rlab <- rlab[idx$r]
 
   cat(paste(sprintf(
     "%s: %s\n",
