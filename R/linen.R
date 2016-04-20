@@ -2,11 +2,13 @@
 ##'
 ##' @title Create a workbook object
 ##' @param names Names of sheets within the workbook
-##' @param style A data.frame of style information.  This is not yet
+##' @param style A big list of style information.  This is not yet
 ##'   validated and we'll change what goes on here at some point.
+##' @param defined_names A data.frame of named ranges and other things
+##'   that Excel puts into the \code{definedNames} section.
 ##' @export
-workbook <- function(names, style) {
-  .R6_workbook$new(names, style)
+workbook <- function(names, style, defined_names) {
+  .R6_workbook$new(names, style, defined_names)
 }
 
 ##' Create a worksheet object
@@ -81,14 +83,16 @@ cells <- function(ref, style, type, value, formula) {
     names=NULL,
     sheets=NULL,
     style=NULL,
+    defined_names=NULL,
 
     ## TODO: this needs some sort of nice "reference" concept (path,
     ## id, etc), perhaps also a hook for updating or checking if we're
     ## out of date, etc.
     ## TODO: Validate style
-    initialize=function(names, style) {
+    initialize=function(names, style, defined_names) {
       self$names <- names
       self$style <- style
+      self$defined_names <- defined_names
       self$sheets <- setNames(vector("list", length(names)), names)
     },
 

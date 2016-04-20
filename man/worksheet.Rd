@@ -4,7 +4,7 @@
 \alias{worksheet}
 \title{Create a worksheet object}
 \usage{
-worksheet(name, cells, merged, workbook)
+worksheet(name, cols, rows, cells, merged, comments, workbook)
 }
 \arguments{
 \item{name}{The name of the worksheet}

@@ -4,13 +4,16 @@
 \alias{workbook}
 \title{Create a workbook object}
 \usage{
-workbook(names, style)
+workbook(names, style, defined_names)
 }
 \arguments{
 \item{names}{Names of sheets within the workbook}
 
-\item{style}{A data.frame of style information.  This is not yet
+\item{style}{A big list of style information.  This is not yet
 validated and we'll change what goes on here at some point.}
+
+\item{defined_names}{A data.frame of named ranges and other things
+that Excel puts into the \code{definedNames} section.}
 }
 \description{
 Create a workbook object
