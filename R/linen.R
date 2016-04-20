@@ -19,8 +19,20 @@ workbook <- function(names, style) {
 ##'   cells.
 ##' @param workbook A workbook object.
 ##' @export
-worksheet <- function(name, cells, merged, workbook) {
-  .R6_worksheet$new(name, cells, merged, workbook)
+worksheet <- function(name, cols, rows, cells, merged, comments, workbook) {
+  ## There's more to come here, at least:
+  ##
+  ##   - ranges
+  ##   - charts
+  ##   - drawings
+  ##   - frozen panes
+  ##   - calc chain
+  ##
+  ## So expect the interface here to wildly thrash about a bit.
+  ## Especially because some of those naturally belong at the
+  ## worksheet level, rather than the worksheet level.  Support is
+  ## being added as I get it working in rexcel.
+  .R6_worksheet$new(name, cols, rows, cells, merged, comments, workbook)
 }
 
 ##' Create a \code{tbl_df} of cell contents
@@ -91,22 +103,29 @@ cells <- function(ref, style, type, value, formula) {
   "worksheet",
 
   public=list(
+    workbook=NULL,
     name=NULL,
+
+    cols=NULL,
+    rows=NULL,
     cells=NULL,
+    merged=NULL,
+    comments=NULL,
+
     dim=NULL,
     pos=NULL,
-    merged=NULL,
     lookup=NULL,
     lookup2=NULL,
 
-    workbook=NULL,
-
     ## TODO: Need to get the name of the worksheet in here.
-    initialize=function(name, cells, merged, workbook) {
+    initialize=function(name, rows, cols, cells, merged, comments, workbook) {
       ## TODO: validate all the things
       self$name <- name
+      self$cols <- cols
+      self$rows <- rows
       self$cells <- cells
       self$merged <- merged
+      self$comments <- comments
       self$workbook <- workbook
       ## Spun out because it's super ugly:
       worksheet_init(self)
