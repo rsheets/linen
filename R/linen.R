@@ -138,6 +138,13 @@ cells <- function(ref, style, type, value, formula) {
       ## Spun out because it's super ugly:
       worksheet_init(self)
       self$workbook$add_sheet(self)
+    }),
+  active=list(
+    sheet=function() {
+      self
+    },
+    xr=function() {
+      cellranger::cell_limits(c(1, 1), self$dim)
     }
   ))
 

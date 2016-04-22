@@ -23,8 +23,8 @@
 ##'   \code{jailbreakr::split_metadata} to hold a reference to cells
 ##'   that contain metadata about the sheet.
 ##' @export
-worksheet_view <- function(sheet, xr, data=NULL) {
-  .R6_worksheet_view$new(sheet, xr, data)
+worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
+  .R6_worksheet_view$new(sheet, xr, filter, data)
 }
 
 .R6_worksheet_view <- R6::R6Class(
@@ -35,13 +35,31 @@ worksheet_view <- function(sheet, xr, data=NULL) {
     data=NULL,
 
     idx=NULL,
+    dim=NULL,
 
-    initialize=function(sheet, xr, data) {
+    initialize=function(sheet, xr, filter, data) {
       assert_inherits(xr, "cell_limits")
       self$sheet <- sheet
       self$xr <- xr
       self$data <- data
       self$idx <- xr_to_idx(xr)
+      self$dim <- lengths(self$idx, FALSE)
+    }
+  ),
+
+  ## It's not clear here which of these we want to pass through as
+  ## active binding methods.  I'm avoiding writing these out as actual
+  ## data because that seems wasteful, but we can always switch out to
+  ## doing that if need be.
+  active=list(
+    lookup=function() {
+      self$sheet$lookup[self$idx$r, self$idx$c]
+    },
+    lookup2=function() {
+      self$sheet$lookup2[self$idx$r, self$idx$c]
+    },
+    cells=function() {
+      self$sheet$cells
     }
   ))
 
