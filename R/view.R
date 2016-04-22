@@ -27,11 +27,13 @@ worksheet_view <- function(sheet, xr) {
   public=list(
     sheet=NULL,
     xr=NULL,
+    idx=NULL,
 
     initialize=function(sheet, xr) {
       assert_inherits(xr, "cell_limits")
       self$sheet <- sheet
       self$xr <- xr
+      self$idx <- xr_to_idx(xr)
     }
   ))
 
