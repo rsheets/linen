@@ -17,9 +17,14 @@
 ##'   \code{rexcel} packages).
 ##' @param xr A \code{cell_limits} object describing the range of the
 ##'   worksheet to view.
+##' @param data Additional data fields, as a list.  This can be
+##'   anything but is passed by value not by reference so clever
+##'   things won't work well here.  Currently I'm using this in
+##'   \code{jailbreakr::split_metadata} to hold a reference to cells
+##'   that contain metadata about the sheet.
 ##' @export
-worksheet_view <- function(sheet, xr) {
-  .R6_worksheet_view$new(sheet, xr)
+worksheet_view <- function(sheet, xr, data=NULL) {
+  .R6_worksheet_view$new(sheet, xr, data)
 }
 
 .R6_worksheet_view <- R6::R6Class(
@@ -27,12 +32,15 @@ worksheet_view <- function(sheet, xr) {
   public=list(
     sheet=NULL,
     xr=NULL,
+    data=NULL,
+
     idx=NULL,
 
-    initialize=function(sheet, xr) {
+    initialize=function(sheet, xr, data) {
       assert_inherits(xr, "cell_limits")
       self$sheet <- sheet
       self$xr <- xr
+      self$data <- data
       self$idx <- xr_to_idx(xr)
     }
   ))

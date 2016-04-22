@@ -4,7 +4,7 @@
 \alias{worksheet_view}
 \title{Create worksheet view}
 \usage{
-worksheet_view(sheet, xr)
+worksheet_view(sheet, xr, data = NULL)
 }
 \arguments{
 \item{sheet}{A worksheet object, created by
@@ -13,6 +13,12 @@ worksheet_view(sheet, xr)
 
 \item{xr}{A \code{cell_limits} object describing the range of the
 worksheet to view.}
+
+\item{data}{Additional data fields, as a list.  This can be
+anything but is passed by value not by reference so clever
+things won't work well here.  Currently I'm using this in
+\code{jailbreakr::split_metadata} to hold a reference to cells
+that contain metadata about the sheet.}
 }
 \description{
 Create worksheet "view"
