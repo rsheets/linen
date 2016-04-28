@@ -92,7 +92,11 @@ cells <- function(ref, style, type, value, formula) {
     ## TODO: Validate style
     initialize=function(names, style, defined_names) {
       self$names <- names
-      self$style <- style
+      if (inherits(style, "linen_style")) {
+        self$style <- style
+      } else if (!is.null(style)) {
+        stop("'style' must be NULL or a linen_style object")
+      }
       self$defined_names <- defined_names
       self$sheets <- setNames(vector("list", length(names)), names)
     },
@@ -192,9 +196,16 @@ worksheet_init <- function(self) {
 
 ##' @export
 print.worksheet <- function(x, ...) {
-  ## First, let's give an overview?
   cat(sprintf("<worksheet: %d x %d>\n", x$dim[[1L]], x$dim[[2L]]))
-  print_sheet(x)
+  fg <- bg <- NULL
+  if (crayon::has_color()) {
+    style <- style_lookup(x, fg="font/color", bg="fill/fg")
+    if (!is.null(style)) {
+      fg <- style$fg[x$cells$style]
+      bg <- style$bg[x$cells$style]
+    }
+  }
+  print_sheet(x, NULL, bg, fg)
   invisible(x)
 }
 
