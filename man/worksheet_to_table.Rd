@@ -2,7 +2,8 @@
 % Please edit documentation in R/table.R
 \name{worksheet_to_table}
 \alias{worksheet_to_table}
-\title{Convert a linen worksheet to a data frame}
+\title{Read a worksheet (from Excel or googlesheets) the same way as
+readxl, but slower.  Assumes a well behaved table of data.}
 \usage{
 worksheet_to_table(dat, col_names = TRUE, col_types = NULL, na = "",
   skip = 0)
@@ -22,11 +23,9 @@ be "blank", "numeric", "date" or "text").}
 blank).  Not yet used.}
 
 \item{skip}{Number of rows to skip.}
-
-\item{sheet}{Sheet name or an integer}
 }
 \description{
-Read a worksheet (from Excel or googlehseetws) the same way as
+Read a worksheet (from Excel or googlesheets) the same way as
 readxl, but slower.  Assumes a well behaved table of data.
 }
 

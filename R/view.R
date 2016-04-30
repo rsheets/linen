@@ -15,6 +15,7 @@
 ##' @param sheet A worksheet object, created by
 ##'   \code{\link{worksheet}} (possibly via the \code{googlesheets} or
 ##'   \code{rexcel} packages).
+##' @param filter filter
 ##' @param xr A \code{cell_limits} object describing the range of the
 ##'   worksheet to view.
 ##' @param data Additional data fields, as a list.  This can be

@@ -15,10 +15,14 @@ workbook <- function(names, style, defined_names) {
 ##'
 ##' @title Create a worksheet object
 ##' @param name The name of the worksheet
+##' @param cols columns
+##' @param rows rows
 ##' @param cells A \code{tbl_df}, created by \code{\link{cells}}.
 ##' @param merged A list of \code{cell_limits} objects indicating
 ##'   merged cellls.  Can be an empty list if there are no merged
 ##'   cells.
+##' @param view view
+##' @param comments comments
 ##' @param workbook A workbook object.
 ##' @export
 worksheet <- function(name, cols, rows, cells, merged, view, comments,
