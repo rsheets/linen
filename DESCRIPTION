@@ -10,11 +10,10 @@ LazyData: true
 URL: https://github.com/jennybc/linen
 BugReports: https://github.com/jennybc/linen/issues
 Imports:
-    cellranger,
+    cellranger (> 1.0.0),
     crayon,
     R6,
     tibble
 Suggests:
     testthat
 RoxygenNote: 5.0.1.9000
-Remotes: jennybc/cellranger@e4b83d6
