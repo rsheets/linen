@@ -9,11 +9,19 @@ worksheet(name, cols, rows, cells, merged, view, comments, workbook)
 \arguments{
 \item{name}{The name of the worksheet}
 
+\item{cols}{columns}
+
+\item{rows}{rows}
+
 \item{cells}{A \code{tbl_df}, created by \code{\link{cells}}.}
 
 \item{merged}{A list of \code{cell_limits} objects indicating
 merged cellls.  Can be an empty list if there are no merged
 cells.}
+
+\item{view}{view}
+
+\item{comments}{comments}
 
 \item{workbook}{A workbook object.}
 }

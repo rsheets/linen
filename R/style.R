@@ -23,6 +23,19 @@
 ## OTOH, some form of extensibility and tidiness is nice; we can
 ## probably keep the general approch with some effort, and provide a
 ## nice lookup facility.
+
+##' Something about style look up
+##'
+##' Jenny is just documenting this minimally because it needs to be exported to
+##' please rexcel and for linen to pass R CMD check. She doesn't know enough yet
+##' to write good docs.
+##'
+##' @param lookup a parameter of the function
+##' @param ... further arguments passed to or from other methods
+##'
+##' @return a list
+##'
+##' @export
 linen_style <- function(lookup, ...) {
   tables <- list(...)
   nms <- names(tables)

@@ -1,9 +1,7 @@
-##' Read a worksheet (from Excel or googlehseetws) the same way as
+##' Read a worksheet (from Excel or googlesheets) the same way as
 ##' readxl, but slower.  Assumes a well behaved table of data.
 ##'
-##' @title Convert a linen worksheet to a data frame
 ##' @param dat A linen \code{\link{worksheet}} object
-##' @param sheet Sheet name or an integer
 ##' @param col_names TRUE (the default) indicating we should use the
 ##'   first row as column names, FALSE, indicating we should generate
 ##'   names (X1, X2, ..., Xn) or a character vector of names to apply.
