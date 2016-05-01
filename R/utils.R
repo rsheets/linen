@@ -11,10 +11,9 @@ vcapply <- function(X, FUN, ...) {
   vapply(X, FUN, character(1), ...)
 }
 
-## Could contribute to cellranger?
 A1_to_matrix <- function(x) {
   ca <- cellranger::as.cell_addr_v(x, strict = FALSE)
-  cbind(row = cellranger::cell_row(ca), col = cellranger::cell_row(ca))
+  cbind(row = cellranger::cell_row(ca), col = cellranger::cell_col(ca))
 }
 
 assert_list <- function(x, name=deparse(substitute(x))) {
