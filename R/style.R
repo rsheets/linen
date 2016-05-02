@@ -60,8 +60,8 @@ linen_style <- function(lookup, ...) {
   }
 
   for (v in nms) {
-    r <- range(lookup[[v]], na.rm=TRUE)
-    if (r[[1L]] < 1 || r[[2L]] > nrow(tables[[v]])) {
+    if (any(lookup[[v]] < 1L, na.rm=TRUE) ||
+        any(lookup[[v]] > nrow(tables[[v]]), na.rm=TRUE)) {
       stop(sprintf("Out of range lookup for %s (should be in [1,%d]",
                    v, nrow(tables[[v]])))
     }
