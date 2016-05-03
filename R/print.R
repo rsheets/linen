@@ -51,7 +51,7 @@ print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
   ## TODO: This probably generalises out at some point as this is
   ## pretty general; apply ansi colour to a table based on vectors of
   ## colour.
-  if (!is.null(bg) || !is.null(fg) && crayon::num_colors() > 1L) {
+  if ((!is.null(bg) || !is.null(fg)) && crayon::num_colors() > 1L) {
     col <- cbind(if (is.null(bg)) NA else bg, if (is.null(fg)) NA else fg)
     col[is.na(col[, 1L]), 1L] <- "#FFFFFF"
     col[is.na(col[, 2L]), 2L] <- "#000000"
@@ -88,7 +88,7 @@ print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
                                     max(which(!empty_col))))
   }
   idx <- xr_to_idx(xr)
-  m <- m[idx$r, idx$c]
+  m <- m[idx$r, idx$c, drop=FALSE]
   clab <- clab[idx$c]
   rlab <- rlab[idx$r]
 
