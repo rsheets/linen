@@ -79,6 +79,8 @@ get_style <- function(x) {
     style <- x$workbook$style
   } else if (inherits(x, "linen_style")) {
     style <- x
+  } else if (inherits(x, "worksheet_view")) {
+    style <- x$sheet$workbook$style
   } else {
     stop("Not sure.")
   }

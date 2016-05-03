@@ -68,5 +68,16 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
 print.worksheet_view <- function(x, ...) {
   cat(sprintf("<worksheet_view: %d x %d (of %d x %d)>\n",
               x$dim[[1L]], x$dim[[2L]], x$sheet$dim[[1L]], x$sheet$dim[[2L]]))
-  print_sheet(x$sheet, x$xr)
+
+  ## TODO: this is both wasteful and duplicates code elsewhere...
+  fg <- bg <- NULL
+  if (crayon::has_color()) {
+    style <- style_lookup(x, fg="font/color", bg="fill/fg")
+    if (!is.null(style)) {
+      fg <- style$fg[x$cells$style]
+      bg <- style$bg[x$cells$style]
+    }
+  }
+
+  print_sheet(x$sheet, x$xr, bg, fg)
 }
