@@ -4,6 +4,8 @@
 
 Spreadsheet data structures, common across different spreadsheet providers.
 
+**Warning: This project is in the early scoping stages; do not use for anything other than amusement/frustration purposes**
+
 ## Installation
 
 ```r
