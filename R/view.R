@@ -45,6 +45,9 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
       self$data <- data
       self$idx <- xr_to_idx(xr)
       self$dim <- lengths(self$idx, FALSE)
+    },
+    values=function() {
+      to_values(self)
     }
   ),
 
@@ -61,6 +64,9 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
     },
     cells=function() {
       self$sheet$cells
+    },
+    merged=function() {
+      self$sheet$merged
     }
   ))
 

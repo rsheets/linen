@@ -108,8 +108,11 @@ cells <- function(ref, style, type, value, formula) {
     ## TODO: name this vector too, once worksheet names are done.
     add_sheet=function(sheet) {
       self$sheets[[sheet$name]] <- sheet
-    }
+    },
 
+    values=function() {
+      to_values(self)
+    }
   ))
 
 .R6_worksheet <- R6::R6Class(
