@@ -9,7 +9,7 @@ Spreadsheet data structures, common across different spreadsheet providers.
 ## Installation
 
 ```r
-devtools::install_github("jennybc/linen")
+devtools::install_github("rsheets/linen")
 ```
 
 ## Design notes

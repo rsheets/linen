@@ -7,8 +7,8 @@ Description: Spreadsheet data structures, common across different spreadsheet
     providers.
 License: MIT + file LICENSE
 LazyData: true
-URL: https://github.com/jennybc/linen
-BugReports: https://github.com/jennybc/linen/issues
+URL: https://github.com/rsheets/linen
+BugReports: https://github.com/rsheets/linen/issues
 Imports:
     cellranger (> 1.0.0),
     crayon,
