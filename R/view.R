@@ -18,14 +18,16 @@
 ##' @param filter filter
 ##' @param xr A \code{cell_limits} object describing the range of the
 ##'   worksheet to view.
+##' @param header Header data
 ##' @param data Additional data fields, as a list.  This can be
 ##'   anything but is passed by value not by reference so clever
 ##'   things won't work well here.  Currently I'm using this in
 ##'   \code{jailbreakr::split_metadata} to hold a reference to cells
 ##'   that contain metadata about the sheet.
 ##' @export
-worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
-  .R6_worksheet_view$new(sheet, xr, filter, data)
+worksheet_view <- function(sheet, xr=NULL, filter=NULL, header=NULL,
+                           data=NULL) {
+  .R6_worksheet_view$new(sheet, xr, filter, header, data)
 }
 
 .R6_worksheet_view <- R6::R6Class(
@@ -33,15 +35,18 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
   public=list(
     sheet=NULL,
     xr=NULL,
+    header=NULL,
     data=NULL,
 
     idx=NULL,
     dim=NULL,
 
-    initialize=function(sheet, xr, filter, data) {
+    initialize=function(sheet, xr, filter, header, data) {
       assert_inherits(xr, "cell_limits")
+      ## TODO: validation here.
       self$sheet <- sheet
       self$xr <- xr
+      self$header <- header
       self$data <- data
       self$idx <- xr_to_idx(xr)
       self$dim <- lengths(self$idx, FALSE)
@@ -74,6 +79,12 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, data=NULL) {
 print.worksheet_view <- function(x, ...) {
   cat(sprintf("<worksheet_view: %d x %d (of %d x %d)>\n",
               x$dim[[1L]], x$dim[[2L]], x$sheet$dim[[1L]], x$sheet$dim[[2L]]))
+  if (!is.null(x$header)) {
+    cat("(with headers)\n")
+  }
+  if (!is.null(x$data)) {
+    cat(sprintf("(with data: %s)\n", paste(names(x$data), collapse=", ")))
+  }
 
   ## TODO: this is both wasteful and duplicates code elsewhere...
   fg <- bg <- NULL
