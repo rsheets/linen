@@ -108,10 +108,6 @@ cells <- function(ref, style, type, value, formula) {
     ## TODO: name this vector too, once worksheet names are done.
     add_sheet=function(sheet) {
       self$sheets[[sheet$name]] <- sheet
-    },
-
-    values=function() {
-      to_values(self)
     }
   ))
 
@@ -149,6 +145,9 @@ cells <- function(ref, style, type, value, formula) {
       ## Spun out because it's super ugly:
       worksheet_init(self)
       self$workbook$add_sheet(self)
+    },
+    values=function() {
+      to_values(self)
     }),
   active=list(
     sheet=function() {

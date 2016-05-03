@@ -7,7 +7,7 @@ to_values <- function(x) {
   ## This is duplicated from the unmerge_headers function but we'll
   ## want to separate that out at some point.
   i <- x$lookup
-  ret <- array(lapply(sheet$cells$value[i], function(x) x %||% NA),
+  ret <- array(lapply(x$cells$value[i], function(x) x %||% NA),
                dim(i))
   colnames(ret) <- x$header
   ret

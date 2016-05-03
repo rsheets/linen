@@ -67,3 +67,7 @@ crayon_col <- function(fg, bg) {
     crayon::make_style(fg),
     crayon::make_style(bg, bg = TRUE))
 }
+
+`%||%` <- function(a, b) {
+  if (is.null(a)) b else a
+}
