@@ -13,7 +13,7 @@ vcapply <- function(X, FUN, ...) {
 
 A1_to_matrix <- function(x) {
   ca <- cellranger::as.cell_addr_v(x, strict = FALSE)
-  cbind(row = cellranger::cell_row(ca), col = cellranger::cell_col(ca))
+  cbind(row = cellranger::addr_row(ca), col = cellranger::addr_col(ca))
 }
 
 assert_list <- function(x, name=deparse(substitute(x))) {

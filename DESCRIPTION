@@ -10,7 +10,7 @@ LazyData: true
 URL: https://github.com/rsheets/linen
 BugReports: https://github.com/rsheets/linen/issues
 Imports:
-    cellranger (> 1.0.0),
+    cellranger (>= 1.0.0.9001),
     crayon,
     R6,
     tibble
