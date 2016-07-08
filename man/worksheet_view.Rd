@@ -4,7 +4,8 @@
 \alias{worksheet_view}
 \title{Create worksheet view}
 \usage{
-worksheet_view(sheet, xr = NULL, filter = NULL, data = NULL)
+worksheet_view(sheet, xr = NULL, filter = NULL, header = NULL,
+  data = NULL)
 }
 \arguments{
 \item{sheet}{A worksheet object, created by
@@ -15,6 +16,8 @@ worksheet_view(sheet, xr = NULL, filter = NULL, data = NULL)
 worksheet to view.}
 
 \item{filter}{filter}
+
+\item{header}{Header data}
 
 \item{data}{Additional data fields, as a list.  This can be
 anything but is passed by value not by reference so clever
