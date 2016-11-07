@@ -43,7 +43,7 @@ print_sheet <- function(x, xr=NULL, bg=NULL, fg=NULL, ...) {
   m[pos[x$cells$is_value   & x$cells$is_number, , drop=FALSE]] <- "0"
   m[pos[x$cells$is_value   & x$cells$is_text,   , drop=FALSE]] <- "a"
   m[pos[x$cells$is_value   & x$cells$is_bool,   , drop=FALSE]] <- "b"
-  m[pos[x$cells$is_formula & x$cells$is_date,   , drop=FALSE]] <- "d"
+  m[pos[x$cells$is_value   & x$cells$is_date,   , drop=FALSE]] <- "d"
   empty_row <- apply(is.na(m), 1, all)
   empty_col <- apply(is.na(m), 2, all)
   m[is.na(m)] <- " "
