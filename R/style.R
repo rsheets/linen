@@ -93,13 +93,29 @@ style_valid <- function(x) {
   unlist(lapply(nms, function(x) paste(x, names(style[[x]]), sep="/")))
 }
 
-style_lookup <- function(x, ...) {
+
+##' Work with \code{linen_style} objects.  This is going to need
+##' documentation, but the details are still being worked out.
+##'
+##' .. content for \details{} ..
+##' @title Look up and compute styles
+##' @param x An object that can can converted into a
+##'   \code{linen_style} object; either the style data itself, or a
+##'   worksheet or workbook object.
+##' @param ... A set of elements to be extracted.  These must be
+##'   nested with "/" (e.g., "num_fmt/is_date_time"), and can be named
+##'   (in which case the output is named).
+##' @param idx optional vector to subset the computed style with
+##' @export
+##' @author Rich FitzJohn
+style_lookup <- function(x, ..., idx = NULL) {
   style <- get_style(x)
   if (is.null(style)) {
     return(NULL)
   }
 
   ## TODO: Deal with invalid entry request (will throw via tibble for now)
+  ## TODO: support passing either "foo" or "foo/*"
   els <- list(...)
   stopifnot(all(vlapply(els, is.character)))
   els <- strsplit(unlist(els), "/", fixed=TRUE)
@@ -119,5 +135,6 @@ style_lookup <- function(x, ...) {
     names(ret) <- nms
   }
 
-  tibble::as_data_frame(ret)
+  ans <- tibble::as_data_frame(ret)
+  if (is.null(idx)) ans else ans[idx, ]
 }
