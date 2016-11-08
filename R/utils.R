@@ -13,9 +13,35 @@ vcapply <- function(X, FUN, ...) {
 
 A1_to_matrix <- function(x) {
   if (length(x) > 0L) {
-    ca <- cellranger::as.cell_addr_v(x, strict = FALSE)
-    cbind(row = cellranger::addr_row(ca),
-          col = cellranger::addr_col(ca))
+    ## TODO: this is oddly too slow when there are c. 100k references;
+    ## it takes 11s to process!
+    ##    ca <- cellranger::as.cell_addr_v(x, strict = FALSE)
+    ##    cbind(row = cellranger::addr_row(ca),
+    ##          col = cellranger::addr_col(ca))
+    ## The workaround below could be ported back to cellranger
+    ##
+    ## With the approach here, it takes ~0.24s (so ~45x speed up and
+    ## ~400k per second) but this is something that might be better
+    ## done in C?
+    re <- "^([A-Z]+)([0-9]+)$"
+    if (!all(grepl(re, x))) {
+      stop("Unexpected cell references (probably a bug)")
+    }
+
+    ## The row reference is nice and easy:
+    row <- as.integer(sub(re, "\\2", x))
+
+    ## Still too slow:
+    ##   col <- cellranger::letter_to_num(sub(re, "\\1", x))
+    ## Here's one approach; we could possibly to better than justify
+    ## if I could work out how to unpack a ragged list a bit better.
+    col_char <- format(sub(re, "\\1", x), justify = "right")
+    n <- nchar(col_char[[1]])
+    tmp <- matrix(match(unlist(strsplit(col_char, NULL)), LETTERS), n)
+    tmp[is.na(tmp)] <- 0
+    m <- 26^(rev(seq_len(n) - 1L))
+    col <- colSums(tmp * m)
+    cbind(row = row, col = col)
   } else {
     cbind(row = integer(0), col = integer(0))
   }
