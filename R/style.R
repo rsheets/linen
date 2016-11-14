@@ -97,7 +97,6 @@ style_valid <- function(x) {
 ##' Work with \code{linen_style} objects.  This is going to need
 ##' documentation, but the details are still being worked out.
 ##'
-##' .. content for \details{} ..
 ##' @title Look up and compute styles
 ##' @param x An object that can can converted into a
 ##'   \code{linen_style} object; either the style data itself, or a

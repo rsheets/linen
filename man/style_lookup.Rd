@@ -21,9 +21,6 @@ nested with "/" (e.g., "num_fmt/is_date_time"), and can be named
 Work with \code{linen_style} objects.  This is going to need
 documentation, but the details are still being worked out.
 }
-\details{
-.. content for \details{} ..
-}
 \author{
 Rich FitzJohn
 }
