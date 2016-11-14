@@ -72,10 +72,10 @@ R6_worksheet_view <- R6::R6Class(
   ## doing that if need be.
   active = list(
     lookup = function() {
-      self$sheet$lookup[self$idx$r, self$idx$c]
+      self$sheet$lookup[self$idx$r, self$idx$c, drop = FALSE]
     },
     lookup2 = function() {
-      self$sheet$lookup2[self$idx$r, self$idx$c]
+      self$sheet$lookup2[self$idx$r, self$idx$c, drop = FALSE]
     },
     cells = function() {
       self$sheet$cells

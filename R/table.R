@@ -21,9 +21,11 @@ worksheet_to_table <- function(dat, col_names = TRUE, col_types = NULL,
   tmp <- table_col_names(dat, col_names, skip)
   col_names <- tmp$col_names
   skip <- tmp$skip
+  keep <- tmp$keep
   xr <- cellranger::cell_limits(c(skip + 1, 1), dat$dim)
   v <- worksheet_view(dat, xr)
-  v$table(col_names = col_names, col_types = col_types, na = na)
+  ret <- v$table(col_names = col_names, col_types = col_types, na = na)
+  if (all(keep)) ret else ret[, keep, drop = FALSE]
 }
 
 worksheet_view_to_table <- function(dat, col_names = TRUE, ...) {
@@ -80,6 +82,7 @@ view_data_to_table <- function(dat, col_names, col_types = NULL, na = "") {
 table_col_names <- function(dat, col_names, skip = 0L) {
   nc <- dat$dim[[2]]
   skip <- 0L
+  keep <- rep(TRUE, nc)
   if (is.logical(col_names)) {
     if (col_names) {
       if (inherits(dat, "worksheet_view")) {
@@ -92,7 +95,6 @@ table_col_names <- function(dat, col_names, skip = 0L) {
         col_names <- rep(NA_character_, nc)
         i <- dat$lookup[skip + 1L, ]
         keep <- !is.na(i)
-        if (!all(keep)) stop("WHAT IS GOING ON HERE?") # fixme
         nms <- dat$cells$value[i[keep]]
         j <- !vlapply(nms, is.null)
         col_names[keep][j] <- vcapply(nms[j], as.character)
@@ -110,7 +112,8 @@ table_col_names <- function(dat, col_names, skip = 0L) {
   }
 
   list(col_names = col_names,
-       skip = skip)
+       skip = skip,
+       keep = keep)
 }
 
 ## The R time objects really want me poke my eyes out.  Perhaps there
