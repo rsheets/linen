@@ -114,25 +114,25 @@ cells <- function(ref, style, type, value, formula) {
 .R6_worksheet <- R6::R6Class(
   "worksheet",
 
-  public=list(
-    workbook=NULL,
-    name=NULL,
+  public = list(
+    workbook = NULL,
+    name = NULL,
 
-    cols=NULL,
-    rows=NULL,
-    cells=NULL,
-    merged=NULL,
-    comments=NULL,
-    view=NULL,
+    cols = NULL,
+    rows = NULL,
+    cells = NULL,
+    merged = NULL,
+    comments = NULL,
+    view = NULL,
 
-    dim=NULL,
-    pos=NULL,
-    lookup=NULL,
-    lookup2=NULL,
+    dim = NULL,
+    pos = NULL,
+    lookup = NULL,
+    lookup2 = NULL,
 
     ## TODO: Need to get the name of the worksheet in here.
-    initialize=function(name, rows, cols, cells, merged, view, comments,
-                        workbook) {
+    initialize = function(name, rows, cols, cells, merged, view, comments,
+                          workbook) {
       ## TODO: validate all the things
       self$name <- name
       self$cols <- cols
@@ -146,14 +146,20 @@ cells <- function(ref, style, type, value, formula) {
       worksheet_init(self)
       self$workbook$add_sheet(self)
     },
-    values=function() {
+
+    values = function() {
       to_values(self)
-    }),
-  active=list(
-    sheet=function() {
+    },
+
+    table = function(col_names = TRUE) {
+      worksheet_to_table(self, col_names)
+    }
+  ),
+  active = list(
+    sheet = function() {
       self
     },
-    xr=function() {
+    xr = function() {
       cellranger::cell_limits(c(1, 1), self$dim)
     }
   ))

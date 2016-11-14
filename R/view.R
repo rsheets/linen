@@ -25,25 +25,30 @@
 ##'   \code{jailbreakr::split_metadata} to hold a reference to cells
 ##'   that contain metadata about the sheet.
 ##' @export
-worksheet_view <- function(sheet, xr=NULL, filter=NULL, header=NULL,
-                           data=NULL) {
-  .R6_worksheet_view$new(sheet, xr, filter, header, data)
+worksheet_view <- function(sheet, xr = NULL, filter = NULL, header = NULL,
+                           data = NULL) {
+  R6_worksheet_view$new(sheet, xr, filter, header, data)
 }
 
-.R6_worksheet_view <- R6::R6Class(
+R6_worksheet_view <- R6::R6Class(
   "worksheet_view",
   public=list(
-    sheet=NULL,
-    xr=NULL,
-    header=NULL,
-    data=NULL,
+    sheet = NULL,
+    xr = NULL,
+    header = NULL,
+    data = NULL,
 
-    idx=NULL,
-    dim=NULL,
+    idx = NULL,
+    dim = NULL,
 
-    initialize=function(sheet, xr, filter, header, data) {
+    initialize = function(sheet, xr, filter, header, data) {
       assert_inherits(xr, "cell_limits")
       ## TODO: validation here.
+      ##
+      ## * headers; should be allowed to be:
+      ##   - character vector
+      ##   - integer (or integer range)
+      ##   - cell_limits
       self$sheet <- sheet
       self$xr <- xr
       self$header <- header
@@ -51,8 +56,13 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, header=NULL,
       self$idx <- xr_to_idx(xr)
       self$dim <- lengths(self$idx, FALSE)
     },
-    values=function() {
+
+    values = function() {
       to_values(self)
+    },
+
+    table = function(col_names = TRUE, ...) {
+      worksheet_view_to_table(self, col_names, ...)
     }
   ),
 
@@ -60,17 +70,17 @@ worksheet_view <- function(sheet, xr=NULL, filter=NULL, header=NULL,
   ## active binding methods.  I'm avoiding writing these out as actual
   ## data because that seems wasteful, but we can always switch out to
   ## doing that if need be.
-  active=list(
-    lookup=function() {
+  active = list(
+    lookup = function() {
       self$sheet$lookup[self$idx$r, self$idx$c]
     },
-    lookup2=function() {
+    lookup2 = function() {
       self$sheet$lookup2[self$idx$r, self$idx$c]
     },
-    cells=function() {
+    cells = function() {
       self$sheet$cells
     },
-    merged=function() {
+    merged = function() {
       self$sheet$merged
     }
   ))

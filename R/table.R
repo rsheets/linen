@@ -12,65 +12,51 @@
 ##'   blank).  Not yet used.
 ##' @param skip Number of rows to skip.
 ##' @export
-worksheet_to_table <- function(dat, col_names=TRUE, col_types=NULL,
-                               na="", skip=0) {
+worksheet_to_table <- function(dat, col_names = TRUE, col_types = NULL,
+                               na = "", skip = 0) {
   if (!identical(na, "")) {
     .NotYetUsed("na") # TODO -- passed in to the type inference stuff
   }
-  nc <- dat$dim[[2]]
 
-  if (is.logical(col_names)) {
-    if (col_names) {
-      col_names <- rep(NA_character_, nc)
-      i <- dat$lookup[skip + 1L, ]
-      keep <- !is.na(i)
-      nms <- dat$cells$value[i[keep]]
-      j <- !vlapply(nms, is.null)
-      col_names[keep][j] <- unlist(nms[j])
-      skip <- skip + 1L
-    } else {
-      col_names <- NULL
-      keep <- rep(FALSE, nc)
-    }
-  } else if (is.character(col_names)) {
-    if (length(col_names) != nc) {
-      stop(sprintf("Expected %d col_names", nc))
-    }
+  tmp <- table_col_names(dat, col_names, skip)
+  col_names <- tmp$col_names
+  skip <- tmp$skip
+  xr <- cellranger::cell_limits(c(skip + 1, 1), dat$dim)
+  v <- worksheet_view(dat, xr)
+  v$table(col_names = col_names, col_types = col_types, na = na)
+}
+
+worksheet_view_to_table <- function(dat, col_names = TRUE, ...) {
+  col_names <- table_col_names(dat, col_names)$col_names
+  view_data_to_table(dat, col_names, ...)
+}
+
+view_data_to_table <- function(dat, col_names, col_types = NULL, na = "") {
+  if (!identical(na, "")) {
+    .NotYetUsed("na") # TODO -- passed in to the type inference stuff
+  }
+
+  stopifnot(inherits(dat, "worksheet_view"))
+  if (is.null(col_names)) {
+    col_names <- sprintf("X%d", seq_len(dat$dim[[2]]))
   } else {
-    stop("`col_names` must be a logical or character vector")
+    stopifnot(length(col_names) == dat$dim[[2]])
   }
 
-  lookup <- (if (skip > 0L) dat$lookup[-seq_len(skip), , drop=FALSE]
-             else dat$lookup)
+  lookup <- dat$lookup
 
-  if (!is.null(col_types)) {
-    stop("Not yet handled")
-    ## col_types: Either ‘NULL’ to guess from the spreadsheet or a
-    ##           character vector containing "blank", "numeric",
-    ##           "date" or "text".
-  }
-
-  ## Valid types: blank > bool > date > numeric > text
-  ## NOTE: bool is going to map to map to number here to match the
-  ## behaviour of readxl; I'd rather map it to logical, but I'm sure
-  ## Hadley had a very good reason for not doing this, which I'd
-  ## rather not find out the hard way.  At the same time I saw a
-  ## comment in the source with a TODO on it --
-  ##   src/XlsxCell.h: XlsxCell::type()
-  ## TODO: columns that mix bool and number should throw an error at
-  ## the moment because those types can't be harmonised, really.
-  cell_types <- c(blank=0, bool=1, date=2, number=3, text=4)
+  cell_types <- c(blank = 0, bool = 1, date = 2, number = 3, text = 4)
   type <- array(unname(cell_types[dat$cells$type[c(lookup)]]), dim(lookup))
-  type <- apply(rbind(cell_types[["blank"]], type), 2, max, na.rm=TRUE)
+  type <- apply(rbind(cell_types[["blank"]], type), 2, max, na.rm = TRUE)
   type <- names(cell_types)[match(type, cell_types)]
 
   ret <- data.frame(array(NA, dim(lookup)))
 
-  tr <- list(number=as.numeric,
-             bool=as.numeric,
-             date=unlist_times,
-             text=function(x) vapply(x, as.character, character(1L)),
-             blank=as.numeric)
+  tr <- list(number = as.numeric,
+             bool = as.numeric,
+             date = unlist_times,
+             text = function(x) vapply(x, as.character, character(1L)),
+             blank = as.numeric)
   for (i in seq_along(type)) {
     t <- type[[i]]
     j <- lookup[, i]
@@ -84,25 +70,54 @@ worksheet_to_table <- function(dat, col_names=TRUE, col_types=NULL,
     ret[k, i] <- tr[[t]](col)
   }
 
-  keep <- keep | type != "blank"
-  ret <- ret[keep]
-
-  if (is.null(col_names)) {
-    col_names <- sprintf("X%d", seq_len(ncol(ret)))
-  } else {
-    col_names <- col_names[keep]
-  }
   names(ret) <- col_names
-
-  class(ret) <- c("tbl_df", "tbl", "data.frame")
   ret
+}
+
+## TODO: this needs to change to accomodate reading the header
+## information more generally, and for the case where we *do* want the
+## header information read from the first row of a view.
+table_col_names <- function(dat, col_names, skip = 0L) {
+  nc <- dat$dim[[2]]
+  skip <- 0L
+  if (is.logical(col_names)) {
+    if (col_names) {
+      if (inherits(dat, "worksheet_view")) {
+        if (is.character(dat$header) && length(dat$header) == dat$dim[[2]]) {
+          col_names <- dat$header
+        } else {
+          stop("header information not convertable to col_names")
+        }
+      } else {
+        col_names <- rep(NA_character_, nc)
+        i <- dat$lookup[skip + 1L, ]
+        keep <- !is.na(i)
+        if (!all(keep)) stop("WHAT IS GOING ON HERE?") # fixme
+        nms <- dat$cells$value[i[keep]]
+        j <- !vlapply(nms, is.null)
+        col_names[keep][j] <- vcapply(nms[j], as.character)
+        skip <- skip + 1L
+      }
+    } else {
+      col_names <- NULL
+    }
+  } else if (is.character(col_names)) {
+    if (length(col_names) != nc) {
+      stop(sprintf("Expected %d col_names", nc))
+    }
+  } else {
+    stop("`col_names` must be a logical or character vector")
+  }
+
+  list(col_names = col_names,
+       skip = skip)
 }
 
 ## The R time objects really want me poke my eyes out.  Perhaps there
 ## is a better way of doing this?  Who knows?
 unlist_times <- function(x) {
   if (length(x) == 0L) {
-    structure(numeric(0), class=c("POSIXct", "POSIXt"), tzone="UTC")
+    structure(numeric(0), class = c("POSIXct", "POSIXt"), tzone = "UTC")
   } else {
     tmp <- unlist(x)
     attributes(tmp) <- attributes(x[[1L]])
